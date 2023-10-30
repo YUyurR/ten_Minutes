@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     height: 400,
     alignSelf: 'center',
     marginTop: 10,
-    marginBottom: 30,
+    marginBottom: 10,
   },
   status_title: {
     color: 'black',

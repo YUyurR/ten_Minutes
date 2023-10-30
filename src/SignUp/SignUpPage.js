@@ -11,9 +11,13 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import SignupRequest from './SignupRequest.js';
-import {UserNNicknameTest} from './ValidateFormat.js';
 
 function SignUpPage({navigation}) {
+  const Redirect = () => {
+    console.log('Redirecting...');
+    navigation.navigate('LoginPage');
+  };
+
   let signupForm = {
     name: null,
     birthdate: null,
@@ -21,10 +25,9 @@ function SignUpPage({navigation}) {
     email: null,
     id: null,
     password: null,
-    //SubmitPwConfirm: null,
   };
 
-  const [signedUp, setSignup] = useState(false); //회원가입 성공 여부를 지정하는 곳. 그다음 취할 액션에 영향을 줌.
+  //const [signedUp, setSignup] = useState(true); //회원가입 성공 여부를 지정하는 곳. 그다음 취할 액션에 영향을 줌.
   const [username, setName] = useState('');
   const [date_birth, setBday] = useState('');
   const [nickname, setNickname] = useState('');
@@ -57,21 +60,16 @@ function SignUpPage({navigation}) {
       signupForm.email = email;
       signupForm.id = id;
       signupForm.password = password;
-      //signupForm.SubmitPwConfirm = pwConfirm;
 
-      let signup = SignupRequest({signupForm});
-      signup;
-      console.log('회원가입page로 리턴한 값: ' + signup);
-
-      //SignupRequest에서 받은 값에 따라 setSignup(true) 또는 (false) 로 처리할지 정할 것.
-      // }
+      SignupRequest({signupForm});
+      return Redirect();
     }
   };
   return (
     <ScrollView>
-      <View style={styles.container}>
-        <View style={styles.signupform}>
-          <KeyboardAvoidingView behavior="position">
+      <KeyboardAvoidingView behavior="position" style={styles.container}>
+        <View style={styles.container}>
+          <View style={styles.signupform}>
             {errors.username ? (
               <Text style={styles.errorText}>{errors.username}</Text>
             ) : null}
@@ -115,7 +113,6 @@ function SignUpPage({navigation}) {
               <Text style={styles.errorText}>{errors.email}</Text>
             ) : null}
 
-            <View style={styles.wrapper}></View>
             <TextInput
               style={styles.input}
               placeholderTextColor="#666666"
@@ -173,16 +170,16 @@ function SignUpPage({navigation}) {
             <Button
               title="가입완료"
               onPress={() => {
-                handleSubmit();
-                if (signedUp == true) {
-                  navigation.navigate('MainPage');
-                }
+                handleSubmit(); //함수에서 메인화면으로 네비게이션 처리
+                // if (signedUp == true) {
+                //   navigation.navigate('');
+                // }
                 //if (signedUp == false)면 폼 비우고 다시 쓰라고 안내하기
               }}
             />
-          </KeyboardAvoidingView>
+          </View>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </ScrollView>
   );
 }
@@ -217,9 +214,6 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     padding: 10,
     borderRadius: 5,
-  },
-  wrapper: {
-    flex: 1,
   },
   errorText: {
     color: 'red',

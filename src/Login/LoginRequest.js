@@ -1,38 +1,57 @@
-function LoginRequest(username, password) {
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+function LoginRequest(loginForm) {
   const token = 'GachonCe@23201B00kclub';
-  const url = 'http://210.102.178.98:60001/home/t23201/svr/v0.5/src';
-  console.log(url + '에 로그인 준비');
+  const sendto = 'http://ceprj.gachon.ac.kr:60001/login';
+
+  console.log(sendto + '에 로그인 준비');
   const options = {
     method: 'POST',
     headers: {
-      Accept: 'SignupComplete/json',
+      Accept: 'application/json',
       'Content-Type': 'application/json;charset=UTF-8',
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({
-      username,
-      password,
-    }),
+    body: JSON.stringify(loginForm),
   };
-  console.log(username, password);
-  fetch(url, options)
-    .then(response => response.json())
-    .then(console.log('서버에 로그인 접속중'))
-    .then(responseJson => {
-      console.log(responseJson);
-      if (responseJson.status === 'success') {
-        console.log(responseJson.data.stu_id);
-        return 1;
+
+  console.log(JSON.stringify({loginForm}));
+
+  fetch(sendto, options)
+    .then(response => {
+      console.log('response 있음');
+      const responseString = JSON.stringify({response});
+      const responseObject = JSON.parse(responseString);
+      const status = responseObject.response.status;
+
+      console.log(
+        '[response 형식: ' +
+          typeof {response} +
+          '\n' +
+          JSON.stringify({response}) +
+          '\n' +
+          status +
+          ']',
+      );
+      if (status === 200) {
+        //네트워크 상태 200일시, 토큰을 받는다.
+        console.log('response  (in IF절): ' + response);
+        console.log('response.status (in IF절): ' + response.status);
+        console.log('data--성공: ' + response.ok);
+
+        AsyncStorage.setItem(
+          'accessToken',
+          JSON.stringify(({id: userInputId}, secretKey, {expiresIn: '1h'})),
+        );
+        console.log('토큰 저장 완료, 로그인합니다...');
+        navigation.navigate('MainPage');
       } else {
-        setErrortext('아이디와 비밀번호를 다시 확인해주세요');
         console.log('로그인 실패');
-        return 0;
       }
+      return JSON.stringify(response.json());
     })
     .catch(error => {
-      console.error(`${error}--에러 발생`);
-      return 'test';
+      console.error(`${error}--loginRequest측 에러 발생`);
     });
 }
-
-export {LoginRequest};
+export default LoginRequest;

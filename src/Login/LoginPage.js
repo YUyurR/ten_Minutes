@@ -9,11 +9,16 @@ import {
   View,
   KeyboardAvoidingView,
 } from 'react-native';
-import {LoginRequest} from './LoginRequest.js';
+import LoginRequest from './LoginRequest.js';
 
 function LoginPage({navigation}) {
+  let loginForm = {
+    id: null,
+    password: null,
+  };
+
   const [signedUp, setSignup] = useState(false);
-  const [username, setUsername] = useState('');
+  const [id, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const nextRef = useRef('');
 
@@ -21,7 +26,7 @@ function LoginPage({navigation}) {
 
   const validateForm = () => {
     let errors = {};
-    if (!username) errors.username = '아이디를 입력하세요.';
+    if (!id) errors.username = '아이디를 입력하세요.';
     if (!password) errors.password = '비밀번호를 입력하세요.';
     setErrors(errors);
     return Object.keys(errors).length === 0;
@@ -29,29 +34,19 @@ function LoginPage({navigation}) {
 
   const handleSubmit = () => {
     if (validateForm()) {
-      setErrors({});
-      let testvalue = LoginRequest(username, password);
-      testvalue;
-      navigation.navigate('MainPage');
-      console.log(testvalue);
-      //   return setSignup(true);
-      // } else {
-      //   return setSignup(false);
-      // }
-    }
-  };
+      loginForm.id = id;
+      loginForm.password = password;
 
-  const connectLogin = () => {
-    setUsername('');
-    setPassword('');
-    handleSubmit();
+      let login = LoginRequest({loginForm});
+      login;
+    }
   };
 
   return (
     <KeyboardAvoidingView behavior="position" style={styles.container}>
       <View style={styles.form}>
         <Image
-          source={require('../assets/testimage-smolruby.jpg')}
+          source={require('../assets/logo_darker.png')}
           style={styles.image}
         />
         {errors.username ? (
@@ -61,7 +56,7 @@ function LoginPage({navigation}) {
           style={styles.input}
           placeholderTextColor="#666666"
           placeholder="아이디"
-          value={username}
+          value={id}
           onChangeText={setUsername}
           autoCapitalize="none"
           onSubmitEditing={() => {
@@ -83,11 +78,11 @@ function LoginPage({navigation}) {
           secureTextEntry
           autoCapitalize="none"
           ref={nextRef}
-          onSubmitEditing={connectLogin}
+          onSubmitEditing={handleSubmit}
         />
 
         <View style={styles.upperButtons}>
-          <Button title="로그인" onPress={connectLogin} />
+          <Button title="로그인" onPress={handleSubmit} />
           <Button
             title="회원가입"
             onPress={() => {
@@ -106,6 +101,12 @@ function LoginPage({navigation}) {
         <Button
           title="아이디/비밀번호 찾기"
           // onPress={() => navigation.navigate('FindIDpsw')}
+        />
+        <Button //개발용 로그인 없이 메인화면 접속하는 버튼. 발표할때 지우기
+          title="개발용 바로진입"
+          style={'border:#ccc'}
+          backgroundColor="white"
+          onPress={() => navigation.navigate('MainPage')}
         />
       </View>
     </KeyboardAvoidingView>
@@ -143,7 +144,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   image: {
-    width: 200,
     height: 200,
     alignSelf: 'center',
     marginBottom: 30,
@@ -152,7 +152,9 @@ const styles = StyleSheet.create({
     marginTop: 20,
     justifyContent: 'center',
     flexDirection: 'row',
-    image: '../assets/kakao_login_medium_narrow.png',
+  },
+  upperButtons: {
+    marginBottom: 10, //적용 왜 안되는지 나중에 보기
   },
   errorText: {
     color: 'red',
