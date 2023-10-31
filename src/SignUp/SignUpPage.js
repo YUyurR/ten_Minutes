@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   ScrollView,
   Keyboard,
@@ -13,11 +13,6 @@ import {
 import SignupRequest from './SignupRequest.js';
 
 function SignUpPage({navigation}) {
-  const Redirect = () => {
-    console.log('Redirecting...');
-    navigation.navigate('LoginPage');
-  };
-
   let signupForm = {
     name: null,
     birthdate: null,
@@ -27,7 +22,6 @@ function SignUpPage({navigation}) {
     password: null,
   };
 
-  //const [signedUp, setSignup] = useState(true); //회원가입 성공 여부를 지정하는 곳. 그다음 취할 액션에 영향을 줌.
   const [username, setName] = useState('');
   const [date_birth, setBday] = useState('');
   const [nickname, setNickname] = useState('');
@@ -61,13 +55,15 @@ function SignUpPage({navigation}) {
       signupForm.id = id;
       signupForm.password = password;
 
-      SignupRequest({signupForm});
-      return Redirect();
+      return fetch(SignupRequest({signupForm})) //SignupRequest 하면서 반환된 Promise 오브젝트를 fetch함
+        .then(response => response.json)
+        .then(navigation.navigate('LoginPage'));
     }
   };
+
   return (
     <ScrollView>
-      <KeyboardAvoidingView behavior="position" style={styles.container}>
+      <KeyboardAvoidingView behavior="padding" style={styles.container}>
         <View style={styles.container}>
           <View style={styles.signupform}>
             {errors.username ? (
@@ -170,11 +166,7 @@ function SignUpPage({navigation}) {
             <Button
               title="가입완료"
               onPress={() => {
-                handleSubmit(); //함수에서 메인화면으로 네비게이션 처리
-                // if (signedUp == true) {
-                //   navigation.navigate('');
-                // }
-                //if (signedUp == false)면 폼 비우고 다시 쓰라고 안내하기
+                handleSubmit();
               }}
             />
           </View>

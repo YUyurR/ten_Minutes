@@ -23,7 +23,7 @@ function RootStack() {
         options={{headerShown: false}}
       />
       <Stack.Screen
-        name="SignUp"
+        name="SignUpPage"
         component={SignUpPage}
         options={{headerShown: false}}
       />

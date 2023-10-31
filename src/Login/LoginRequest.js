@@ -41,7 +41,7 @@ function LoginRequest(loginForm) {
 
         AsyncStorage.setItem(
           'accessToken',
-          JSON.stringify(({id: userInputId}, secretKey, {expiresIn: '1h'})),
+          JSON.stringify(({user}, secretKey, {expiresIn: '1h'})),
         );
         console.log('토큰 저장 완료, 로그인합니다...');
         navigation.navigate('MainPage');
@@ -51,7 +51,7 @@ function LoginRequest(loginForm) {
       return JSON.stringify(response.json());
     })
     .catch(error => {
-      console.error(`${error}--loginRequest측 에러 발생`);
+      console.error(`${error}-LoginRequest.js에서 에러 발생`);
     });
 }
 export default LoginRequest;

@@ -86,7 +86,7 @@ function LoginPage({navigation}) {
           <Button
             title="회원가입"
             onPress={() => {
-              navigation.navigate('SignUp');
+              navigation.navigate('SignUpPage');
             }}
           />
         </View>

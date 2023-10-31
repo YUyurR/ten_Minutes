@@ -40,7 +40,6 @@ function SignupRequest(signupForm) {
         console.log('response  (in IF절): ' + response);
         console.log('response.status (in IF절): ' + response.status);
         console.log('data--성공: ' + response.ok);
-        return true;
       } else {
         console.log('회원가입 실패');
       }
@@ -48,7 +47,7 @@ function SignupRequest(signupForm) {
     })
 
     .catch(error => {
-      console.error(`${error}--signupRequest측 에러 발생`);
+      console.error(`${error}-SignupRequest.js에서 오류 발생`);
     });
 }
 export default SignupRequest;
