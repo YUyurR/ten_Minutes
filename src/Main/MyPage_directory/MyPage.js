@@ -7,7 +7,7 @@ function MyPage({navigation}) {
       <Button title="과거 캐릭터 조회" onPress={() => navigation.push('')} />
       <Button title="분리배출 히스토리" onPress={() => navigation.push('')} />
       <Button
-        title="개인정보 관리"
+        title="개인정보 조회/관리"
         onPress={() => navigation.push('UserInfo')}
       />
       <Button

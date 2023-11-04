@@ -10,12 +10,14 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 
-function UserInfo({navigation}) {
+function UserInfoEdit({navigation}) {
   const name = '홍길동';
   const date_birth = '19990418';
   let [nickname, setNickname] = useState('고슴도치');
   let [email, setEmail] = useState('hedgehogs@asdfg.com');
   const id = 'sea23';
+  let [password, setPassword] = useState('');
+  let [pwConfirm, setConfirm] = useState('');
 
   const [isReadOnly, setReadOnly] = useState(true);
 
@@ -23,7 +25,12 @@ function UserInfo({navigation}) {
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.signupform}>
         <Text style={styles.text}>이름</Text>
-        <TextInput style={styles.input} value={name} editable={false} />
+        <TextInput
+          style={styles.input}
+          value={name}
+          editable={false}
+          borderColor="white"
+        />
 
         <Text style={styles.text}>ID</Text>
         <TextInput
@@ -31,10 +38,16 @@ function UserInfo({navigation}) {
           value={id}
           autoCapitalize="none"
           readOnly={true}
+          borderColor="white"
         />
 
         <Text style={styles.text}>생년월일</Text>
-        <TextInput style={styles.input} value={date_birth} readOnly={true} />
+        <TextInput
+          style={styles.input}
+          value={date_birth}
+          readOnly={true}
+          borderColor="white"
+        />
 
         <Text style={styles.text}>닉네임</Text>
         <TextInput
@@ -47,7 +60,6 @@ function UserInfo({navigation}) {
           onChangeText={setNickname}
           autoCapitalize="none"
           flex={6}
-          readOnly={isReadOnly}
         />
 
         <KeyboardAvoidingView behavior="padding">
@@ -60,22 +72,50 @@ function UserInfo({navigation}) {
             onChangeText={setEmail}
             autoCapitalize="none"
             flex={6}
-            readOnly={isReadOnly}
+            //borderColor='#ccc'
           />
 
+          <Text style={styles.text}>비밀번호</Text>
+          <TextInput
+            style={styles.input}
+            placeholderTextColor="#999"
+            placeholder="PW(영문+숫자+특수문자 포함 8~16자)"
+            value={password}
+            maxLength={16}
+            secureTextEntry
+            onChangeText={setPassword}
+            autoCapitalize="none"
+            editable={true}
+          />
+
+          <Text style={styles.text}>비밀번호 확인</Text>
+          <TextInput
+            style={styles.input}
+            placeholderTextColor="#999"
+            placeholder="PW 확인"
+            value={pwConfirm}
+            maxLength={16}
+            secureTextEntry
+            onChangeText={setConfirm}
+            autoCapitalize="none"
+            editable={true}
+          />
           <View style={styles.buttons}>
             <Button
-              title="수정하기"
+              title="저장하기"
               onPress={() => {
-                navigation.navigate('Mypage', {screen: 'CheckPassword'});
+                navigation.navigate('Mypage', {screen: 'UserInfo'});
+                console.log('버튼 입력');
               }}
             />
-            <Button
-              title="회원탈퇴"
-              onPress={() => {
-                navigation.navigate('DeleteAccount');
-              }}
-            />
+            <View style={{marginTop: 13}}>
+              <Button
+                title="회원탈퇴"
+                onPress={() => {
+                  navigation.navigate('DeleteAccount');
+                }}
+              />
+            </View>
           </View>
         </KeyboardAvoidingView>
       </View>
@@ -107,12 +147,12 @@ const styles = StyleSheet.create({
   },
   text: {
     color: '#2e2e2e',
-    borderColor: 'white',
+    //borderColor:'#ccc',
   },
   input: {
     height: 38,
     color: '#595959',
-    borderColor: 'white',
+    borderColor: '#ccc',
     borderWidth: 1,
     marginRight: 4,
     marginBottom: 18,
@@ -129,4 +169,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default UserInfo;
+export default UserInfoEdit;

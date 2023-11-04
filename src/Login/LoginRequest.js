@@ -1,57 +1,52 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-function LoginRequest(loginForm) {
-  const token = 'GachonCe@23201B00kclub';
-  const sendto = 'http://ceprj.gachon.ac.kr:60001/login';
-
+async function LoginRequest(loginForm) {
+  const sendto = 'http://ceprj.gachon.ac.kr:60001/';
   console.log(sendto + '에 로그인 준비');
   const options = {
     method: 'POST',
     headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json;charset=UTF-8',
-      Authorization: `Bearer ${token}`,
+      //Accept: 'application/json',
+      Who: 'User', //최근에 추가된 속성
+      'Content-Type': 'application/json',
     },
-    body: JSON.stringify(loginForm),
+    body: JSON.stringify(loginForm), //로그인폼 전송
   };
 
-  console.log(JSON.stringify({loginForm}));
+  let myToken = async response => {
+    // response 매개변수를 받도록 수정
+    const responseData = await response.json();
+    const accessToken = responseData;
+    try {
+      await AsyncStorage.setItem('accessToken', JSON.stringify(accessToken));
+      console.log('토큰 저장 완료');
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
-  fetch(sendto, options)
-    .then(response => {
+  return fetch(sendto, options)
+    .then(async response => {
       console.log('response 있음');
-      const responseString = JSON.stringify({response});
-      const responseObject = JSON.parse(responseString);
-      const status = responseObject.response.status;
+      // const responseString = JSON.stringify({ response }); // 이 부분은 제거 가능
+      // const responseObject = JSON.parse(responseString); // 이 부분은 제거 가능
+      const status = response.status;
 
-      console.log(
-        '[response 형식: ' +
-          typeof {response} +
-          '\n' +
-          JSON.stringify({response}) +
-          '\n' +
-          status +
-          ']',
-      );
       if (status === 200) {
-        //네트워크 상태 200일시, 토큰을 받는다.
-        console.log('response  (in IF절): ' + response);
-        console.log('response.status (in IF절): ' + response.status);
-        console.log('data--성공: ' + response.ok);
+        console.log('로그인합니다...');
+        await myToken(response); // response를 myToken 함수로 전달
 
-        AsyncStorage.setItem(
-          'accessToken',
-          JSON.stringify(({user}, secretKey, {expiresIn: '1h'})),
-        );
-        console.log('토큰 저장 완료, 로그인합니다...');
-        navigation.navigate('MainPage');
+        // AsyncStorage에서 accessToken 가져올 때 JSON 파싱을 추가
+        const accessTokenJSON = await AsyncStorage.getItem('accessToken');
+        const accessToken = JSON.parse(accessTokenJSON);
+
+        console.log('토큰:', accessToken);
       } else {
-        console.log('로그인 실패');
+        throw new Error('Login failed');
       }
-      return JSON.stringify(response.json());
     })
     .catch(error => {
-      console.error(`${error}-LoginRequest.js에서 에러 발생`);
+      console.error(`${error} - LoginRequest.js에서 에러 발생`);
     });
 }
 export default LoginRequest;

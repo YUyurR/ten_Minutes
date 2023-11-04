@@ -10,6 +10,46 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import LoginRequest from './LoginRequest.js';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+async function AccessMain() {
+  const myToken = await AsyncStorage.getItem('accessToken');
+  const sendto = 'http://ceprj.gachon.ac.kr:60001/main';
+
+  console.log('\n', myToken, ':토큰꺼내기.');
+
+  const options = {
+    method: 'GET',
+    headers: {
+      Who: 'User', // 최근에 추가된 속성
+      Authorization: myToken,
+    },
+  };
+
+  try {
+    const response = await fetch(sendto, options);
+    console.log('IN try!!!');
+    console.log(JSON.stringify(response));
+    const responseObject = await response.json();
+    console.log('IN try!!!');
+    const status = responseObject.status;
+    console.log(
+      `[response 형식: ${typeof responseObject}, ${JSON.stringify(
+        responseObject,
+      )}, ${status}]`,
+    );
+
+    if (status === 200) {
+      console.log('response (in IF절): ' + JSON.stringify(responseObject));
+      console.log('response.status (in IF절): ' + status);
+      console.log('data--성공: ' + response.ok);
+      setSignin(true); // You need to define setSignin function if it's not defined here.
+      console.log('Token ok.');
+    }
+  } catch (error) {
+    console.error(`${error}--GET /main 에서 에러`);
+  }
+}
 
 function LoginPage({navigation}) {
   let loginForm = {
@@ -17,7 +57,6 @@ function LoginPage({navigation}) {
     password: null,
   };
 
-  const [signedUp, setSignup] = useState(false);
   const [id, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const nextRef = useRef('');
@@ -31,16 +70,40 @@ function LoginPage({navigation}) {
     setErrors(errors);
     return Object.keys(errors).length === 0;
   };
-
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (validateForm()) {
       loginForm.id = id;
       loginForm.password = password;
 
-      let login = LoginRequest({loginForm});
-      login;
+      try {
+        console.log('loginRequest 실행 전');
+        await LoginRequest({loginForm}); // 로그인 요청 및 토큰을 받음
+        console.log('loginRequest 실행 후');
+        const accessTokenJSON = await AsyncStorage.getItem('accessToken');
+        const accessToken = JSON.parse(accessTokenJSON);
+
+        if (!accessToken) {
+          console.log('LoginRequest 실행 실패인가...?');
+        } else {
+          console.log('access Token 있음!');
+          await AccessMain(); // 토큰이 있는 경우에만 메인 페이지로 이동
+          navigation.navigate('Primary', {screen: 'MainPage'});
+        }
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
+  // const handleSubmit = () => {
+  //   if (validateForm()) {
+  //     loginForm.id = id;
+  //     loginForm.password = password;
+
+  //     return fetch(LoginRequest({loginForm}))
+  //       .then(AccessMain())
+  //       .then(navigation.navigate('Primary', {screen: 'MainPage'}));
+  //   }
+  // };
 
   return (
     <KeyboardAvoidingView behavior="position" style={styles.container}>
@@ -86,7 +149,7 @@ function LoginPage({navigation}) {
           <Button
             title="회원가입"
             onPress={() => {
-              navigation.navigate('SignUpPage');
+              navigation.navigate('Auth', {screen: 'SignUpPage'});
             }}
           />
         </View>
@@ -106,7 +169,7 @@ function LoginPage({navigation}) {
           title="개발용 바로진입"
           style={'border:#ccc'}
           backgroundColor="white"
-          onPress={() => navigation.navigate('MainPage')}
+          onPress={() => navigation.navigate('Primary', {screen: 'MainPage'})}
         />
       </View>
     </KeyboardAvoidingView>
@@ -153,9 +216,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'row',
   },
-  upperButtons: {
-    marginBottom: 10, //적용 왜 안되는지 나중에 보기
-  },
+  upperButtons: {},
   errorText: {
     color: 'red',
     marginBottom: 7,

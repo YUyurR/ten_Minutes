@@ -57,7 +57,7 @@ function SignUpPage({navigation}) {
 
       return fetch(SignupRequest({signupForm})) //SignupRequest 하면서 반환된 Promise 오브젝트를 fetch함
         .then(response => response.json)
-        .then(navigation.navigate('LoginPage'));
+        .then(navigation.navigate('Primary', {screen: 'LoginPage'}));
     }
   };
 

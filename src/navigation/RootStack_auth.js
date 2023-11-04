@@ -1,12 +1,9 @@
-import React from 'react';
+import LoginPage from '../Login/LoginPage';
+import SignUpPage from '../SignUp/SignUpPage';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-
-import LoginPage from './Login/LoginPage';
-import SignUpPage from './SignUp/SignUpPage';
-
 const Stack = createNativeStackNavigator();
 
-function Signup_Navigator() {
+function RootStack_auth() {
   return (
     <Stack.Navigator initialRouteName="LoginPage">
       <Stack.Screen
@@ -15,7 +12,7 @@ function Signup_Navigator() {
         options={{headerShown: false}}
       />
       <Stack.Screen
-        name="SignUp"
+        name="SignUpPage"
         component={SignUpPage}
         options={{headerShown: false}}
       />
@@ -23,4 +20,4 @@ function Signup_Navigator() {
   );
 }
 
-export default Signup_Navigator;
+export default RootStack_auth;

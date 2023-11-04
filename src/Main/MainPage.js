@@ -20,15 +20,20 @@ function MainPage({navigation}) {
 
       <Button
         title="분리배출 매뉴얼"
-        onPress={() => navigation.push('')}
+        onPress={() => navigation.push('Primary', {screen: 'ManualList'})}
         style={styles.buttons}
       />
 
       <Button
         title="공공쓰레기통 위치 확인"
-        onPress={() => navigation.push('ViewLocataionData')}
+        onPress={() =>
+          navigation.push('Primary', {screen: 'ViewLocataionData'})
+        }
       />
-      <Button title="마이페이지" onPress={() => navigation.push('MyPage')} />
+      <Button
+        title="마이페이지"
+        onPress={() => navigation.push('Mypage', {screen: 'MyPage'})}
+      />
       <Button
         title="쓰레기 분류하기"
         onPress={() => navigation.push('GarbageDetect', {id: 1})}

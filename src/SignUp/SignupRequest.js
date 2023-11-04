@@ -1,12 +1,5 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useState, useEffect} from 'react';
-
-import ValidateFormat from './ValidateFormat.js';
-
 function SignupRequest(signupForm) {
-  const token = 'GachonCe@23201B00kclub';
-  const sendto = 'http://ceprj.gachon.ac.kr:60001/signup';
-  //const bodysend = JSON.stringify(signupForm);
+  const sendto = 'http://ceprj.gachon.ac.kr:60001/account';
 
   console.log(sendto + '에 연결 준비');
   const options = {
@@ -14,7 +7,6 @@ function SignupRequest(signupForm) {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json;charset=UTF-8',
-      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(signupForm),
   };
@@ -23,7 +15,7 @@ function SignupRequest(signupForm) {
 
   fetch(sendto, options)
     .then(response => {
-      const responseString = JSON.stringify({response});
+      const responseString = JSON.stringify({response}); //내용 및 상태 확인
       const responseObject = JSON.parse(responseString);
       const status = responseObject.response.status;
       console.log(
@@ -43,9 +35,7 @@ function SignupRequest(signupForm) {
       } else {
         console.log('회원가입 실패');
       }
-      //return true;
     })
-
     .catch(error => {
       console.error(`${error}-SignupRequest.js에서 오류 발생`);
     });
