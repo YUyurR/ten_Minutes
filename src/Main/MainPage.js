@@ -1,23 +1,63 @@
-import React from 'react';
-import {View, Button, StyleSheet, Text, Pressable, Image} from 'react-native';
+import React, {useState} from 'react';
+import {
+  SafeAreaView,
+  View,
+  Button,
+  StyleSheet,
+  Text,
+  Pressable,
+  Image,
+} from 'react-native';
 import ShowAnimalProfile from './Animal_care/ShowAnimalProfile';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+const URL = 'http://ceprj.gachon.ac.kr:60001/main';
 
-function MainPage({navigation}) {
-  let dummyBottlecap;
+// async function GetNumValues() {
+//   const myToken = await AsyncStorage.getItem('accessToken');
+//   const sendto = 'http://ceprj.gachon.ac.kr:60001/main';
+
+//   const options = {
+//     method: 'GET',
+//     headers: {
+//       Who: 'User', // 최근에 추가된 속성
+//       'Content-Type': 'application/json',
+//       Authorization: myToken,
+//     },
+//   };
+
+//   try {
+//     const response = await fetch(sendto, options);
+//     const responseObject = await response.json();
+//     const status = responseObject.status;
+//     console.log(
+//       `[response 형식: ${typeof responseObject}, ${JSON.stringify(
+//         responseObject,
+//       )}, ${status}]`,
+//     );
+
+//     if (status === 200) {
+//       console.log('response (in IF절): ' + JSON.stringify(responseObject));
+//       console.log('response.status (in IF절): ' + status);
+//       console.log('data--성공: ' + response.ok);
+//       console.log('Token ok.');
+//     }
+//   } catch (error) {
+//     console.error(`${error}--포인트와 병뚜껑 정보를 가져오지 못했습니다.`);
+//   }
+// }
+
+function MainPage({navigation}, {route}) {
+  const [bottlecap, setBottlecap] = useState();
+  const [point, setPoint] = useState();
 
   return (
     <View>
       <Pressable onPress={() => navigation.push('AnimalCare')}>
         <ShowAnimalProfile />
       </Pressable>
-      <View style={styles.bottleCap}>
-        <Image
-          source={require('../assets/bottlecap_icon.png')}
-          style={styles.capIcon}
-        />
-        <Text style={styles.capIcon}>병뚜껑:{dummyBottlecap}개</Text>
-      </View>
 
+      <Text style={styles.capNumber}>병뚜껑:{bottlecap}개</Text>
+      <Text style={styles.capNumber}>성장포인트:{point}개</Text>
       <Button
         title="분리배출 매뉴얼"
         onPress={() => navigation.push('Primary', {screen: 'ManualList'})}
@@ -47,8 +87,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'row',
   },
-  capIcon: {
-    fontSize: 20,
+  capNumber: {
+    fontSize: 18,
   },
   capIcon: {
     height: 25,

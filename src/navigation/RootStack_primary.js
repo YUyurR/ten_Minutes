@@ -4,6 +4,7 @@ import GarbageDetect from '../Main/Detect_Garbage/GarbageDetect.js';
 import AnimalCare from '../Main/Animal_care/AnimalCare';
 import ViewLocataionData from '../Main/Find_Garbage_Can/ViewLocataionData';
 import ManualList from '../Main/Manual/ManualList.js';
+import DetailPage from '../Main/Manual/DetailPage.js';
 //import LoginKakao from './Login/LoginKakao';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
@@ -42,6 +43,14 @@ function RootStack_Primary() {
         component={ManualList}
         options={{
           title: '분리배출 매뉴얼',
+          headerTitleAlign: 'center',
+        }}
+      />
+      <Stack.Screen
+        name="DetailPage"
+        component={DetailPage}
+        options={{
+          title: '매뉴얼 상세정보',
           headerTitleAlign: 'center',
         }}
       />

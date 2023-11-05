@@ -17,7 +17,7 @@ function UserInfo({navigation}) {
   let [email, setEmail] = useState('hedgehogs@asdfg.com');
   const id = 'sea23';
 
-  const [isReadOnly, setReadOnly] = useState(true);
+  const [isReadOnly, setReadOnly] = useState();
 
   return (
     <ScrollView contentContainerStyle={styles.container}>

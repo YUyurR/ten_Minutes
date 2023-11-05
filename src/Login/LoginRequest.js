@@ -7,7 +7,7 @@ async function LoginRequest(loginForm) {
     method: 'POST',
     headers: {
       //Accept: 'application/json',
-      Who: 'User', //최근에 추가된 속성
+      Who: 'User',
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(loginForm), //로그인폼 전송
