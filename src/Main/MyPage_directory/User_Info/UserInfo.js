@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import {
   ScrollView,
-  Keyboard,
   StyleSheet,
   Text,
   TextInput,
@@ -9,21 +8,66 @@ import {
   View,
   KeyboardAvoidingView,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function UserInfo({navigation}) {
-  const name = '홍길동';
-  const date_birth = '19990418';
-  let [nickname, setNickname] = useState('고슴도치');
-  let [email, setEmail] = useState('hedgehogs@asdfg.com');
-  const id = 'sea23';
+  const [username, setName] = useState('');
+  const [date_birth, setBday] = useState('');
+  const [nickname, setNickname] = useState('');
+  const [email, setEmail] = useState('');
+  const [id, setID] = useState('');
 
-  const [isReadOnly, setReadOnly] = useState();
+  async function UserInfoReq() {
+    let myToken = await AsyncStorage.getItem('accessToken');
+    const sendto = 'http://ceprj.gachon.ac.kr:60001/myinfo';
+    const options = {
+      method: '',
+      headers: {
+        Who: 'User',
+        'Content-Type': 'application/json',
+        Authorization: myToken,
+      },
+    };
+
+    return fetch(sendto, options)
+      .then(async response => {
+        console.log('response 있음');
+        const responseObject = await response.json();
+        const status = response.status;
+        console.log(
+          `[response 형식: ${typeof responseObject}, ${JSON.stringify(
+            responseObject,
+          )}, ${status}]`,
+        );
+        const isoDate = responseObject.birth;
+        const date = new Date(isoDate);
+
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        const hours = date.getHours().toString().padStart(2, '0');
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+        const seconds = date.getSeconds().toString().padStart(2, '0');
+
+        const formattedDate = `${year}-${month}-${day}`;
+        setName(responseObject.name);
+        setID(responseObject.id);
+        setBday(formattedDate);
+        setNickname(responseObject.nickname);
+        setEmail(responseObject.email);
+      })
+      .catch(errors => {
+        console.error(`${errors} - UserInfo.js에서 에러 발생`);
+      });
+  }
+
+  UserInfoReq();
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.signupform}>
         <Text style={styles.text}>이름</Text>
-        <TextInput style={styles.input} value={name} editable={false} />
+        <TextInput style={styles.input} value={username} editable={false} />
 
         <Text style={styles.text}>ID</Text>
         <TextInput
@@ -41,13 +85,11 @@ function UserInfo({navigation}) {
           id="#nickname"
           width={'500'}
           style={styles.input}
-          placeholderTextColor="#7a7a7a"
-          placeholder="닉네임"
           value={nickname}
           onChangeText={setNickname}
           autoCapitalize="none"
           flex={6}
-          readOnly={isReadOnly}
+          readOnly={true}
         />
 
         <KeyboardAvoidingView behavior="padding">
@@ -60,20 +102,24 @@ function UserInfo({navigation}) {
             onChangeText={setEmail}
             autoCapitalize="none"
             flex={6}
-            readOnly={isReadOnly}
+            readOnly={true}
           />
 
           <View style={styles.buttons}>
             <Button
               title="수정하기"
               onPress={() => {
-                navigation.navigate('Mypage', {screen: 'CheckPassword'});
+                navigation.navigate('Mypage', {
+                  screen: 'CheckPassword',
+                });
               }}
             />
             <Button
               title="회원탈퇴"
               onPress={() => {
-                navigation.navigate('DeleteAccount');
+                navigation.navigate('Mypage', {
+                  screen: 'CheckPassword_delete',
+                });
               }}
             />
           </View>

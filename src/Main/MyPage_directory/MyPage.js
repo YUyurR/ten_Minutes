@@ -1,5 +1,6 @@
 import React from 'react';
 import {View, Button} from 'react-native';
+import Logout from './User_Info/Logout';
 
 function MyPage({navigation}) {
   return (
@@ -13,7 +14,7 @@ function MyPage({navigation}) {
       <Button
         title="로그아웃"
         onPress={() => {
-          navigation.push('LoginPage');
+          Logout({navigation});
         }}
       />
       <Button title="문의하기" onPress={() => {}} />

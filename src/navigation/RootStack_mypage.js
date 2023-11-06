@@ -1,9 +1,10 @@
 import UserInfo from '../Main/MyPage_directory/User_Info/UserInfo.js';
-import DeleteAccount from '../Main/MyPage_directory/User_Info/Delete_Account/DeleteAccount.js';
 import MyPage from '../Main/MyPage_directory/MyPage.js';
-import UserInfoEdit from '../Main/MyPage_directory/User_Info/UserInfoEdit.js';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import CheckPassword from '../Main/MyPage_directory/User_Info/CheckPassword.js';
+import CheckPassword_delete from '../Main/MyPage_directory/User_Info/CheckPassword_delete.js';
+import EditInfo from '../Main/MyPage_directory/User_Info/EditInfo.js';
+import ConfirmDelete from '../Main/MyPage_directory/User_Info/ConfirmDelete.js';
 const Stack = createNativeStackNavigator();
 
 function RootStack_mypage() {
@@ -26,26 +27,34 @@ function RootStack_mypage() {
         }}
       />
       <Stack.Screen
-        name="DeleteAccount"
-        component={DeleteAccount}
-        options={{
-          title: '회원 탈퇴',
-          headerTitleAlign: 'center',
-        }}
-      />
-      <Stack.Screen
-        name="UserInfoEdit"
-        component={UserInfoEdit}
-        options={{
-          title: '수정하기',
-          headerTitleAlign: 'center',
-        }}
-      />
-      <Stack.Screen
         name="CheckPassword"
         component={CheckPassword}
         options={{
           title: '비밀번호 확인',
+          headerTitleAlign: 'center',
+        }}
+      />
+      <Stack.Screen
+        name="CheckPassword_delete"
+        component={CheckPassword_delete}
+        options={{
+          title: '비밀번호 확인',
+          headerTitleAlign: 'center',
+        }}
+      />
+      <Stack.Screen
+        name="EditInfo"
+        component={EditInfo}
+        options={{
+          title: '개인정보 수정',
+          headerTitleAlign: 'center',
+        }}
+      />
+      <Stack.Screen
+        name="ConfirmDelete"
+        component={ConfirmDelete}
+        options={{
+          title: '회원탈퇴 완료',
           headerTitleAlign: 'center',
         }}
       />

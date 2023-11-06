@@ -77,33 +77,22 @@ function LoginPage({navigation}) {
 
       try {
         console.log('loginRequest 실행 전');
-        await LoginRequest({loginForm}); // 로그인 요청 및 토큰을 받음
+        await LoginRequest({loginForm}, {navigation}); // 로그인 요청 및 토큰을 받음
         console.log('loginRequest 실행 후');
-        const accessTokenJSON = await AsyncStorage.getItem('accessToken');
-        const accessToken = JSON.parse(accessTokenJSON);
+        const accessTokenJSON = await AsyncStorage.getItem('accessToken'); //똑같은 라인이 LoginRequest에도 있음..
+        const accessToken = JSON.parse(accessTokenJSON); //똑같은 라인이 LoginRequest에도 있음..
 
         if (!accessToken) {
-          console.log('LoginRequest 실행 실패인가...?');
+          console.log('LoginRequest 실패');
         } else {
           console.log('access Token 있음!');
-          await AccessMain(); // 토큰이 있는 경우에만 메인 페이지로 이동
-          navigation.navigate('Primary', {screen: 'MainPage'});
+          await AccessMain();
         }
       } catch (error) {
         console.error(error);
       }
     }
   };
-  // const handleSubmit = () => {
-  //   if (validateForm()) {
-  //     loginForm.id = id;
-  //     loginForm.password = password;
-
-  //     return fetch(LoginRequest({loginForm}))
-  //       .then(AccessMain())
-  //       .then(navigation.navigate('Primary', {screen: 'MainPage'}));
-  //   }
-  // };
 
   return (
     <KeyboardAvoidingView behavior="position" style={styles.container}>
@@ -165,12 +154,12 @@ function LoginPage({navigation}) {
           title="아이디/비밀번호 찾기"
           // onPress={() => navigation.navigate('FindIDpsw')}
         />
-        <Button //개발용 로그인 없이 메인화면 접속하는 버튼. 발표할때 지우기
+        {/* <Button //개발용 로그인 없이 메인화면 접속하는 버튼. 발표할때 지우기
           title="개발용 바로진입"
           style={'border:#ccc'}
           backgroundColor="white"
           onPress={() => navigation.navigate('Primary', {screen: 'MainPage'})}
-        />
+        /> */}
       </View>
     </KeyboardAvoidingView>
   );

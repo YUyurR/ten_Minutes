@@ -12,7 +12,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import filter from 'lodash.filter';
-const URL = 'http://ceprj.gachon.ac.kr:60001/manual';
+const URL = 'http://ceprj.gachon.ac.kr:60001/manualList';
 
 function ManualList({navigation}) {
   const [isLoading, setIsLoading] = useState(false);
@@ -31,6 +31,7 @@ function ManualList({navigation}) {
       const response = await fetch(URL);
       const json = await response.json();
       setStr(json);
+      console.log(json);
 
       setFullData(json);
       //console.log(json);

@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
+import {useNavigation} from '@react-navigation/native';
 import {
-  Keyboard,
   StyleSheet,
   Text,
   TextInput,
@@ -8,15 +8,46 @@ import {
   View,
   KeyboardAvoidingView,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-function DeleteAccount({navigation}) {
+function checkPsw(navigation, passwd) {
+  const sendto = 'http://ceprj.gachon.ac.kr:60001/passwdAuth';
+  let loginInfo = {passwd};
+
+  AsyncStorage.getItem('accessToken').then(tokenReady => {
+    fetch(sendto, {
+      method: 'POST',
+      headers: {
+        Who: 'User',
+        Authorization: tokenReady,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(loginInfo),
+    })
+      .then(async response => {
+        const status = response.status;
+        console.log(typeof status, status);
+        if (status === 200) {
+          console.log('비밀번호를 인증합니다...');
+          navigation.navigate('Mypage', {screen: 'EditInfo'});
+        } else {
+          throw new Error('Login failed');
+        }
+      })
+      .catch(errors => {
+        console.error(`${errors} - CheckPassword.js에서 에러 발생`);
+      });
+  });
+}
+
+function CheckPassword() {
+  const navigation = useNavigation();
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
 
   const validateForm = () => {
     let errors = {};
     if (!password) errors.password = '비밀번호를 입력하세요.';
-
     setErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -25,38 +56,30 @@ function DeleteAccount({navigation}) {
     if (validateForm()) {
       setPassword('');
       setErrors({});
+      console.log('제출됨: ', password);
+      checkPsw(navigation, password); // navigation을 인수로 전달
     }
   };
 
   return (
     <KeyboardAvoidingView behavior="position">
-      <View></View>
       <View style={styles.container}>
         <View style={styles.form}>
           {errors.password ? (
             <Text style={styles.errorText}>{errors.password}</Text>
           ) : null}
-          <Text style={styles.text}>비밀번호를 입력하세요.</Text>
           <TextInput
             style={styles.input}
             value={password}
+            placeholder="비밀번호 입력"
             onChangeText={setPassword}
             secureTextEntry
             autoCapitalize="none"
           />
-
           <Button
             style={styles.buttons}
             title="확인"
-            onPress={() => {
-              setPassword('');
-              if (password) {
-                handleSubmit();
-                navigation.navigate('Mypage', {screen: 'UserInfoEdit'});
-              } else {
-                validateForm();
-              }
-            }}
+            onPress={() => handleSubmit()}
           />
         </View>
       </View>
@@ -102,4 +125,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DeleteAccount;
+export default CheckPassword;

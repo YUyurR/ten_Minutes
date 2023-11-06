@@ -36,13 +36,13 @@ function ShowAnimalProfile() {
 
 const styles = StyleSheet.create({
   animal_image: {
-    width: 130,
-    height: 160,
+    width: '120%',
+    height: '140%',
     alignSelf: 'center',
-    marginTop: 100,
+    marginTop: 0,
   },
   background_image: {
-    width: 350,
+    width: 400,
     height: 400,
     alignSelf: 'center',
     marginTop: 10,
